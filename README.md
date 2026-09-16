@@ -12,6 +12,10 @@ The AAN Legacy Foundation platform is a Next.js, TypeScript, and PostgreSQL appl
 
 The local site is available at http://localhost:3000.
 
+## GitHub Pages deployment
+
+Pushes to `main` build the static Next.js export and deploy it through GitHub Pages Actions. In the repository settings, set **Pages > Build and deployment > Source** to **GitHub Actions**. The published site is available at https://mharthin.github.io/AAN-FOUNDATION/.
+
 ## Quality checks
 
 ```bash

@@ -38,10 +38,21 @@ model Program {
   name          String
   slug          String        @unique
   summary       String
-  description   String?
+  description   String
+  category      String
+  featuredImage String?
+  gallery       String[]      @default([])
+  eligibility   String?
+  applicationInfo String?
+  startDate     DateTime?
+  endDate       DateTime?
+  featured      Boolean       @default(false)
   status        ContentStatus @default(DRAFT)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+  @@index([status, featured])
+  @@index([category])
 }
 
 model Story {

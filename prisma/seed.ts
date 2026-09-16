@@ -10,6 +10,8 @@ async function main() {
       name: "Education & Scholarships",
       slug: "education-scholarships",
       summary: "Placeholder program record for local development.",
+      description: "Placeholder program record for local development. Replace this content with approved program information before publishing.",
+      category: "Education & Scholarships",
     },
   });
 }

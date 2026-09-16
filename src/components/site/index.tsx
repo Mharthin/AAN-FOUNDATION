@@ -10,7 +10,7 @@ type LinkItem = { label: string; href: string };
 
 const navItems: LinkItem[] = [
   { label: "About", href: "/about" },
-  { label: "Programs", href: "/#programs" },
+  { label: "Programs", href: "/programs" },
   { label: "Our story", href: "/#stories" },
   { label: "Impact", href: "/#impact" },
   { label: "Get involved", href: "/#involved" },

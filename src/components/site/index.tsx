@@ -120,8 +120,8 @@ export function HeroSection() {
         <div className="relative min-h-[25rem] overflow-hidden bg-[var(--forest-950)] p-8 animate-[aan-rise_800ms_120ms_ease-out_both] sm:min-h-[32rem] lg:min-h-[36rem] lg:p-12">
           <div className="absolute right-[-4rem] top-[-4rem] h-64 w-64 rounded-full border-[1.4rem] border-[var(--gold-500)]" aria-hidden="true" />
           <div className="absolute bottom-[-8rem] left-[-5rem] h-72 w-72 rounded-full border-[2rem] border-[var(--forest-600)]" aria-hidden="true" />
-          <div className="absolute right-6 top-6 w-40 rotate-3 bg-[var(--paper)] p-2 shadow-[var(--shadow-lg)] sm:right-10 sm:top-10 sm:w-52">
-            <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/brand/AAN_logo2.jpeg`} alt="AAN Legacy Foundation logo" width={1080} height={1080} className="h-auto w-full" priority />
+          <div className="absolute right-5 top-5 w-48 sm:right-8 sm:top-8 sm:w-60">
+            <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/brand/AAN_logo1.png`} alt="AAN Legacy Foundation logo" width={1080} height={1080} className="h-auto w-full" priority />
           </div>
           <div className="relative flex h-full min-h-[19rem] flex-col justify-end border-l border-[var(--gold-500)] pl-6 sm:min-h-[26rem]">
             <p className="eyebrow text-[var(--gold-300)]">The AAN philosophy</p>

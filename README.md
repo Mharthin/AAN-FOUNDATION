@@ -31,4 +31,4 @@ npm run build
 - `npm run db:studio` opens Prisma Studio.
 - `npm run db:seed` inserts explicitly marked local placeholder content.
 
-Do not commit `.env` files or real credentials. The initial schema intentionally contains only foundation content, users, events, and audit logging; application and payment models belong to later phases.
+Do not commit `.env` files or real credentials. Scholarship applications require Auth.js or an equivalent session provider, private S3-compatible object storage, malware scanning, and a configured `APPLICATION_ENCRYPTION_KEY` before applicant forms are enabled. The GitHub Pages deployment intentionally keeps application controls disabled because it cannot securely run server-side auth, uploads, or database mutations.

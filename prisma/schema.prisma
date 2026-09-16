@@ -22,15 +22,37 @@ enum ContentStatus {
   ARCHIVED
 }
 
+enum ScholarshipApplicationStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  SHORTLISTED
+  APPROVED
+  NOT_APPROVED
+  WITHDRAWN
+}
+
+enum DocumentScanStatus {
+  PENDING
+  CLEAN
+  REJECTED
+}
+
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
   name          String?
   role          UserRole @default(REVIEWER)
   isActive      Boolean  @default(true)
+  passwordHash  String?
+  emailVerifiedAt DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   auditLogs     AuditLog[]
+  scholarshipApplications ScholarshipApplication[]
+  uploadedDocuments ApplicationDocument[]
+  applicationNotes ApplicationNote[]
+  statusChanges ScholarshipApplicationStatusHistory[]
 }
 
 model Program {
@@ -93,4 +115,91 @@ model AuditLog {
 
   @@index([entity, entityId])
   @@index([createdAt])
+}
+
+model Scholarship {
+  id              String        @id @default(cuid())
+  name            String
+  slug            String        @unique
+  shortDescription String
+  description     String
+  eligibility     String
+  applicationInfo String
+  featuredImage   String?
+  gallery         String[]      @default([])
+  startDate       DateTime?
+  endDate         DateTime?
+  status          ContentStatus @default(DRAFT)
+  featured        Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  applications    ScholarshipApplication[]
+
+  @@index([status, featured])
+  @@index([endDate])
+}
+
+model ScholarshipApplication {
+  id                String                           @id @default(cuid())
+  referenceNumber   String                           @unique
+  applicantId       String
+  scholarshipId     String
+  status            ScholarshipApplicationStatus     @default(DRAFT)
+  encryptedResponses String?
+  submittedAt       DateTime?
+  createdAt         DateTime                         @default(now())
+  updatedAt         DateTime                         @updatedAt
+  applicant         User                             @relation(fields: [applicantId], references: [id], onDelete: Restrict)
+  scholarship       Scholarship                       @relation(fields: [scholarshipId], references: [id], onDelete: Restrict)
+  documents         ApplicationDocument[]
+  statusHistory     ScholarshipApplicationStatusHistory[]
+  notes             ApplicationNote[]
+
+  @@unique([applicantId, scholarshipId])
+  @@index([applicantId, status])
+  @@index([scholarshipId, status])
+  @@index([createdAt])
+}
+
+model ApplicationDocument {
+  id              String             @id @default(cuid())
+  applicationId   String
+  uploadedById    String
+  storageKey      String             @unique
+  originalName    String
+  mimeType        String
+  sizeBytes       Int
+  checksum        String
+  scanStatus      DocumentScanStatus @default(PENDING)
+  createdAt       DateTime           @default(now())
+  application     ScholarshipApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  uploadedBy      User               @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([applicationId, scanStatus])
+}
+
+model ScholarshipApplicationStatusHistory {
+  id            String                       @id @default(cuid())
+  applicationId String
+  fromStatus    ScholarshipApplicationStatus?
+  toStatus      ScholarshipApplicationStatus
+  changedById   String
+  reason        String?
+  createdAt     DateTime                     @default(now())
+  application   ScholarshipApplication       @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  changedBy     User                         @relation(fields: [changedById], references: [id], onDelete: Restrict)
+
+  @@index([applicationId, createdAt])
+}
+
+model ApplicationNote {
+  id            String                @id @default(cuid())
+  applicationId String
+  authorId      String
+  body          String
+  createdAt     DateTime              @default(now())
+  application   ScholarshipApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  author        User                  @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([applicationId, createdAt])
 }

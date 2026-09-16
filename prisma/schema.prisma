@@ -38,6 +38,14 @@ enum DocumentScanStatus {
   REJECTED
 }
 
+enum PeopleApplicationStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  WITHDRAWN
+}
+
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
@@ -53,6 +61,10 @@ model User {
   uploadedDocuments ApplicationDocument[]
   applicationNotes ApplicationNote[]
   statusChanges ScholarshipApplicationStatusHistory[]
+  volunteerApplications VolunteerApplication[]
+  mentorRegistrations MentorRegistration[]
+  peopleApplicationNotes PeopleApplicationNote[]
+  peopleStatusChanges PeopleApplicationStatusHistory[]
 }
 
 model Program {
@@ -202,4 +214,90 @@ model ApplicationNote {
   author        User                  @relation(fields: [authorId], references: [id], onDelete: Restrict)
 
   @@index([applicationId, createdAt])
+}
+
+model VolunteerApplication {
+  id                    String                   @id @default(cuid())
+  referenceNumber       String                   @unique
+  fullName              String
+  email                 String
+  phone                 String
+  location              String
+  areasOfInterest       String
+  skills                String
+  experience            String
+  availability          String
+  motivation            String
+  additionalInformation String?
+  encryptedPayload      String?
+  status                PeopleApplicationStatus @default(SUBMITTED)
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+  applicantId           String?
+  applicant             User?                   @relation(fields: [applicantId], references: [id], onDelete: SetNull)
+  notes                 PeopleApplicationNote[]
+  statusHistory         PeopleApplicationStatusHistory[]
+
+  @@index([status, createdAt])
+  @@index([email])
+  @@index([location])
+}
+
+model MentorRegistration {
+  id                String                   @id @default(cuid())
+  referenceNumber   String                   @unique
+  fullName          String
+  email             String
+  phone             String
+  profession        String
+  skills            String
+  experience        String
+  areasOfMentorship String
+  availability      String
+  bio               String
+  motivation        String
+  encryptedPayload  String?
+  status            PeopleApplicationStatus @default(SUBMITTED)
+  createdAt         DateTime                 @default(now())
+  updatedAt         DateTime                 @updatedAt
+  applicantId       String?
+  applicant         User?                   @relation(fields: [applicantId], references: [id], onDelete: SetNull)
+  notes             PeopleApplicationNote[]
+  statusHistory     PeopleApplicationStatusHistory[]
+
+  @@index([status, createdAt])
+  @@index([email])
+  @@index([profession])
+}
+
+model PeopleApplicationNote {
+  id          String                @id @default(cuid())
+  volunteerId String?
+  mentorId    String?
+  authorId    String
+  body        String
+  createdAt   DateTime              @default(now())
+  volunteer   VolunteerApplication? @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  mentor      MentorRegistration?   @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  author      User                  @relation(fields: [authorId], references: [id], onDelete: Restrict)
+
+  @@index([volunteerId, createdAt])
+  @@index([mentorId, createdAt])
+}
+
+model PeopleApplicationStatusHistory {
+  id          String                   @id @default(cuid())
+  volunteerId String?
+  mentorId    String?
+  fromStatus  PeopleApplicationStatus?
+  toStatus    PeopleApplicationStatus
+  changedById String
+  reason      String?
+  createdAt   DateTime                 @default(now())
+  volunteer   VolunteerApplication?    @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  mentor      MentorRegistration?      @relation(fields: [mentorId], references: [id], onDelete: Cascade)
+  changedBy   User                     @relation(fields: [changedById], references: [id], onDelete: Restrict)
+
+  @@index([volunteerId, createdAt])
+  @@index([mentorId, createdAt])
 }

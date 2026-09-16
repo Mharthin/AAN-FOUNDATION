@@ -2,22 +2,23 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils/cn";
 
 type LinkItem = { label: string; href: string };
 
 const navItems: LinkItem[] = [
-  { label: "About", href: "#about" },
-  { label: "Programs", href: "#programs" },
-  { label: "Our story", href: "#stories" },
-  { label: "Impact", href: "#impact" },
-  { label: "Get involved", href: "#involved" },
+  { label: "About", href: "/about" },
+  { label: "Programs", href: "/#programs" },
+  { label: "Our story", href: "/#stories" },
+  { label: "Impact", href: "/#impact" },
+  { label: "Get involved", href: "/#involved" },
 ];
 
 export function BrandMark({ inverse = false }: { inverse?: boolean }) {
   return (
-    <a href="#top" aria-label="AAN Legacy Foundation home" className="group inline-flex items-center gap-3">
+    <Link href="/" aria-label="AAN Legacy Foundation home" className="group inline-flex items-center gap-3">
       <span className={cn("flex h-10 w-10 items-center justify-center rounded-full border border-[var(--gold-500)] text-sm font-extrabold transition-transform group-hover:rotate-6", inverse ? "text-white" : "text-[var(--forest-950)]")}>
         AAN
       </span>
@@ -25,7 +26,7 @@ export function BrandMark({ inverse = false }: { inverse?: boolean }) {
         <span className={cn("block font-display text-xl font-semibold", inverse ? "text-white" : "text-[var(--forest-950)]")}>AAN Legacy</span>
         <span className={cn("mt-1 block text-[0.6rem] font-bold uppercase tracking-[0.24em]", inverse ? "text-white/55" : "text-[var(--muted)]")}>Foundation</span>
       </span>
-    </a>
+    </Link>
   );
 }
 
@@ -38,9 +39,9 @@ export function Navbar() {
         <BrandMark />
         <nav aria-label="Primary navigation" className="hidden items-center gap-8 lg:flex">
           {navItems.map((item) => (
-            <a key={item.href} href={item.href} className="text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--forest-950)]">
+            <Link key={item.href} href={item.href} className="text-sm font-semibold text-[var(--muted)] transition-colors hover:text-[var(--forest-950)]">
               {item.label}
-            </a>
+            </Link>
           ))}
           <Button variant="gold" size="sm" type="button">Support our work</Button>
         </nav>
@@ -61,9 +62,9 @@ export function Navbar() {
         <nav id="mobile-navigation" aria-label="Mobile navigation" className="border-t border-[var(--line)] bg-[var(--paper)] px-6 py-5 lg:hidden">
           <div className="flex flex-col gap-1">
             {navItems.map((item) => (
-              <a key={item.href} href={item.href} onClick={() => setIsOpen(false)} className="border-b border-[var(--line)] py-4 text-sm font-semibold text-[var(--forest-950)]">
+              <Link key={item.href} href={item.href} onClick={() => setIsOpen(false)} className="border-b border-[var(--line)] py-4 text-sm font-semibold text-[var(--forest-950)]">
                 {item.label}
-              </a>
+              </Link>
             ))}
             <Button variant="gold" size="md" className="mt-4 w-full">Support our work</Button>
           </div>
@@ -84,7 +85,7 @@ export function Footer() {
         <div>
           <p className="eyebrow text-[var(--gold-300)]">Explore</p>
           <div className="mt-5 flex flex-col gap-3 text-sm text-white/70">
-            {navItems.map((item) => <a key={item.href} href={item.href} className="hover:text-white">{item.label}</a>)}
+            {navItems.map((item) => <Link key={item.href} href={item.href} className="hover:text-white">{item.label}</Link>)}
           </div>
         </div>
         <div>
@@ -120,7 +121,7 @@ export function HeroSection() {
           <div className="absolute right-[-4rem] top-[-4rem] h-64 w-64 rounded-full border-[1.4rem] border-[var(--gold-500)]" aria-hidden="true" />
           <div className="absolute bottom-[-8rem] left-[-5rem] h-72 w-72 rounded-full border-[2rem] border-[var(--forest-600)]" aria-hidden="true" />
           <div className="absolute right-6 top-6 w-40 rotate-3 bg-[var(--paper)] p-2 shadow-[var(--shadow-lg)] sm:right-10 sm:top-10 sm:w-52">
-            <Image src="/brand/AAN_logo2.jpeg" alt="AAN Legacy Foundation logo" width={1080} height={1080} className="h-auto w-full" priority />
+            <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/brand/AAN_logo2.jpeg`} alt="AAN Legacy Foundation logo" width={1080} height={1080} className="h-auto w-full" priority />
           </div>
           <div className="relative flex h-full min-h-[19rem] flex-col justify-end border-l border-[var(--gold-500)] pl-6 sm:min-h-[26rem]">
             <p className="eyebrow text-[var(--gold-300)]">The AAN philosophy</p>

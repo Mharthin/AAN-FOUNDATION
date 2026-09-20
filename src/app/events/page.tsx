@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { AboutHero, AboutShell } from "@/components/about";
 import { getPublishedEvents } from "@/features/events/queries";
 
-export const metadata: Metadata = { title: "Events", description: "Join upcoming AAN Legacy Foundation events." };
+export const metadata: Metadata = pageMetadata("Events", "Join upcoming AAN Legacy Foundation events.", "/events");
 export const revalidate = 60;
 
 export default async function EventsPage() {

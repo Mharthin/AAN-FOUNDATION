@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import Link from "next/link";
 import { AboutShell, AboutHero } from "@/components/about";
 import { getPublishedStories } from "@/features/stories/queries";
 
-export const metadata: Metadata = { title: "Stories", description: "Stories, news, announcements, and program updates from AAN Legacy Foundation." };
+export const metadata: Metadata = pageMetadata("Stories", "Stories, news, announcements, and program updates from AAN Legacy Foundation.", "/stories");
 
 export default async function StoriesPage({ searchParams }: { searchParams: Promise<{ q?: string; category?: string; page?: string }> }) {
   const params = await searchParams;

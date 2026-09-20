@@ -24,6 +24,8 @@ npm run typecheck
 npm run build
 ```
 
+See [docs/DEPLOYMENT_CHECKLIST.md](docs/DEPLOYMENT_CHECKLIST.md) for the production release process and required manual verification.
+
 ## Database commands
 
 - `npm run db:migrate` creates and applies development migrations.
@@ -37,4 +39,4 @@ Do not commit `.env` files or real credentials. Scholarship, volunteer, and ment
 
 - `PAYSTACK_SECRET_KEY` is server-only and is used for initialization, verification, and webhook signature checks.
 - `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` is reserved for client-side Paystack integrations and must never contain the secret key.
-- `CMS_ADMIN_TOKEN` is a temporary protected API credential for CMS operators until the full session provider is enabled. Send it as `Authorization: Bearer <token>` or the `cms_admin_token` cookie.
+- `CMS_ADMIN_TOKEN` is a temporary protected API credential for CMS operators until the full session provider is enabled. Send it as an `Authorization: Bearer <token>` header; do not place it in a cookie.

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { AboutHero, AboutShell } from "@/components/about";
 import { ScholarshipCard, ScholarshipEmptyState } from "@/components/scholarships";
 import { getPublishedScholarships } from "@/features/scholarships/queries";
 
-export const metadata: Metadata = { title: "Scholarships", description: "Explore scholarship opportunities from AAN Legacy Foundation." };
+export const metadata: Metadata = pageMetadata("Scholarships", "Explore scholarship opportunities from AAN Legacy Foundation.", "/scholarships");
 
 export default async function ScholarshipsPage() {
   const scholarships = await getPublishedScholarships();

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/seo";
 import { AboutShell, AboutHero } from "@/components/about";
 import { ProgramCard } from "@/components/programs";
 import { EmptyState } from "@/components/ui/patterns";
 import { getPublishedPrograms } from "@/features/programs/queries";
 
-export const metadata: Metadata = { title: "Programs", description: "Explore AAN Legacy Foundation programs and opportunities." };
+export const metadata: Metadata = pageMetadata("Programs", "Explore AAN Legacy Foundation programs and opportunities.", "/programs");
 
 export default async function ProgramsPage() {
   const programs = await getPublishedPrograms();

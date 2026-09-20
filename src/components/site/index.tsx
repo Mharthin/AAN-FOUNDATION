@@ -77,7 +77,7 @@ export function Navbar() {
 
 export function Footer() {
   return (
-    <footer className="bg-[var(--forest-950)] text-white">
+    <footer id="site-footer" className="bg-[var(--forest-950)] text-white">
       <div className="section-shell grid gap-12 py-14 lg:grid-cols-[1.2fr_0.8fr_0.8fr] lg:py-20">
         <div>
           <BrandMark inverse />

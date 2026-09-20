@@ -39,4 +39,4 @@ Do not commit `.env` files or real credentials. Scholarship, volunteer, and ment
 
 - `PAYSTACK_SECRET_KEY` is server-only and is used for initialization, verification, and webhook signature checks.
 - `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` is reserved for client-side Paystack integrations and must never contain the secret key.
-- `CMS_ADMIN_TOKEN` is a temporary protected API credential for CMS operators until the full session provider is enabled. Send it as an `Authorization: Bearer <token>` header; do not place it in a cookie.
+- Administrative APIs use database-backed sessions and role permissions. Do not place session credentials in application code or manually constructed headers.

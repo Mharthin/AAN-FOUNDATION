@@ -1,6 +1,3 @@
-import crypto from "node:crypto";
-import { headers } from "next/headers";
-import type { UserRole } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { getCurrentUser } from "@/lib/security/session";
 
@@ -16,19 +13,7 @@ const cmsRoles = new Set(["SUPER_ADMIN", "ADMINISTRATOR", "PROGRAM_MANAGER", "CO
 export async function requireCmsAdmin() {
   const user = await getCurrentUser();
   if (user && user.isActive && cmsRoles.has(user.role)) return { role: user.role };
-
-  if (process.env.NODE_ENV === "production") throw new Error("CMS administrator authentication required.");
-  const configuredToken = process.env.CMS_ADMIN_TOKEN;
-  const requestHeaders = await headers();
-  const bearer = requestHeaders.get("authorization")?.replace(/^Bearer\s+/i, "");
-
-  if (!configuredToken || !bearer || bearer.length !== configuredToken.length || !crypto.timingSafeEqual(Buffer.from(bearer), Buffer.from(configuredToken))) {
-    throw new Error("CMS administrator authentication required.");
-  }
-
-  const configuredRole = process.env.CMS_ADMIN_ROLE ?? "ADMINISTRATOR";
-  if (!cmsRoles.has(configuredRole)) throw new Error("CMS_ADMIN_ROLE is invalid.");
-  return { role: configuredRole as UserRole };
+  throw new Error("CMS administrator authentication required.");
 }
 
 export async function requireCmsPermission(permission: keyof typeof permissions) {

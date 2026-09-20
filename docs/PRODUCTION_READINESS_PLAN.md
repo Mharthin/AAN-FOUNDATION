@@ -10,8 +10,7 @@ The order is intentional: we will fix the things that can cause data loss, unaut
 - Public content, events, donations, stories, admin APIs, SEO, and deployment documentation exist.
 - The latest reviewed commit is `8e589a8`.
 - The application is **not production-ready yet**.
-- The current admin token is temporary.
-- Stage 2 now includes database-backed user registration, login, password hashing, and sessions. The token remains only as a local-development fallback.
+- Stage 2 now includes database-backed user registration, login, password hashing, and sessions.
 - Applicant authentication and secure document uploads are not implemented.
 - No production database or payment credentials are configured in this development workspace.
 - A reproducible initial Prisma migration has now been generated in `prisma/migrations/`.
@@ -73,7 +72,6 @@ Implemented in this stage:
 
 Still required before this stage is complete:
 
-- Replace the development-only CMS token fallback everywhere.
 - Add account recovery/email verification and MFA for administrators.
 - Protect applicant application APIs with the session user identity.
 - Add audit attribution to admin actions.
@@ -87,7 +85,10 @@ You will manually:
 Current stage status:
 
 - Applicant registration, login, logout, and session expiry are implemented.
-- Full applicant ownership enforcement and complete admin-page protection remain Stage 2 follow-up work.
+- Applicant ownership is enforced by the scholarship workflow and the portal now requires a valid session.
+- Admin API access is session-backed and role-checked; the remaining deployment step is creating the first administrator.
+
+To create the first administrator without putting credentials in source control, set `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` only in the environment where you run the seed command, then run `npm run db:seed`. The password is immediately hashed before storage.
 
 ## Stage 3 — Secure scholarship applications and document uploads
 

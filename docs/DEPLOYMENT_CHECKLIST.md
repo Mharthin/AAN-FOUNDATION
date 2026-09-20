@@ -10,7 +10,6 @@ This checklist separates work that can be completed in the repository from work 
 - Use a non-production PostgreSQL database.
 - Use test Paystack credentials only.
 - Use a development `NEXT_PUBLIC_APP_URL`.
-- Use a development-only `CMS_ADMIN_TOKEN`.
 - Never use production donor, applicant, or payment data locally.
 
 ### Staging and production
@@ -22,9 +21,7 @@ Configure secrets through the hosting provider, not Git:
 - `APPLICATION_ENCRYPTION_KEY`
 - `PAYSTACK_SECRET_KEY`
 - `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` if the chosen Paystack client flow requires it
-- `CMS_ADMIN_TOKEN` until individual admin authentication replaces the temporary token
-- `CMS_ADMIN_ROLE`
-- `AUTH_SECRET` when the real authentication provider is implemented
+- Database-backed administrator sessions and role assignments
 - Email provider credentials when transactional email is enabled
 
 Verify that `.env`, `.env.local`, and provider secret exports are not committed.
@@ -54,7 +51,7 @@ Verify that `.env`, `.env.local`, and provider secret exports are not committed.
 ## 4. Authentication and administration
 
 - Do not launch applicant submissions until real authentication and sessions are enabled.
-- Replace the shared CMS token with individual admin accounts, hashed passwords, secure sessions, logout, recovery, and optional MFA.
+- Create individual admin accounts with hashed passwords, secure sessions, logout, recovery, and optional MFA.
 - Assign database-backed roles per user.
 - Confirm inactive users cannot access admin APIs.
 - Create the first production administrator through a controlled bootstrap process.

@@ -339,6 +339,13 @@ model Donation {
   @@index([purpose])
 }
 
+model PaystackWebhookEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  eventType   String
+  receivedAt  DateTime @default(now())
+}
+
 model PeopleApplicationNote {
   id          String                @id @default(cuid())
   volunteerId String?

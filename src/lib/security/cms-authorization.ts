@@ -1,4 +1,5 @@
-import { cookies, headers } from "next/headers";
+import crypto from "node:crypto";
+import { headers } from "next/headers";
 import { prisma } from "@/lib/db/prisma";
 
 const adminRoles = new Set(["SUPER_ADMIN", "ADMINISTRATOR", "COMMUNICATIONS_MANAGER"]);
@@ -14,9 +15,8 @@ export async function requireCmsAdmin() {
   const configuredToken = process.env.CMS_ADMIN_TOKEN;
   const requestHeaders = await headers();
   const bearer = requestHeaders.get("authorization")?.replace(/^Bearer\s+/i, "");
-  const cookieToken = (await cookies()).get("cms_admin_token")?.value;
 
-  if (!configuredToken || (bearer !== configuredToken && cookieToken !== configuredToken)) {
+  if (!configuredToken || !bearer || bearer.length !== configuredToken.length || !crypto.timingSafeEqual(Buffer.from(bearer), Buffer.from(configuredToken))) {
     throw new Error("CMS administrator authentication required.");
   }
 

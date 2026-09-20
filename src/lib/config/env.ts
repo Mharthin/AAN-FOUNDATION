@@ -12,5 +12,8 @@ export function getEnv() {
   return envSchema.parse({
     DATABASE_URL: process.env.DATABASE_URL,
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
+    NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+    CMS_ADMIN_TOKEN: process.env.CMS_ADMIN_TOKEN,
   });
 }

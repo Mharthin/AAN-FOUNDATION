@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { requireCmsAdmin } from "@/lib/security/cms-authorization";
+import { requireCmsPermission } from "@/lib/security/cms-authorization";
 import { z } from "zod";
 
 const updateSchema = z.object({
@@ -11,11 +11,11 @@ const updateSchema = z.object({
 });
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  try { await requireCmsAdmin(); const parsed = updateSchema.safeParse(await request.json()); if (!parsed.success) return NextResponse.json({ error: "Invalid story fields." }, { status: 400 }); const data = { ...parsed.data, ...(parsed.data.status === "PUBLISHED" && parsed.data.publishedAt === undefined ? { publishedAt: new Date() } : {}) }; return NextResponse.json(await prisma.story.update({ where: { id: (await params).id }, data })); }
+  try { await requireCmsPermission("stories"); const parsed = updateSchema.safeParse(await request.json()); if (!parsed.success) return NextResponse.json({ error: "Invalid story fields." }, { status: 400 }); const data = { ...parsed.data, ...(parsed.data.status === "PUBLISHED" && parsed.data.publishedAt === undefined ? { publishedAt: new Date() } : {}) }; return NextResponse.json(await prisma.story.update({ where: { id: (await params).id }, data })); }
   catch (error) { console.error("Story update failed", error); return NextResponse.json({ error: "Unable to update story." }, { status: 500 }); }
 }
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  try { await requireCmsAdmin(); await prisma.story.delete({ where: { id: (await params).id } }); return new NextResponse(null, { status: 204 }); }
+  try { await requireCmsPermission("stories"); await prisma.story.delete({ where: { id: (await params).id } }); return new NextResponse(null, { status: 204 }); }
   catch (error) { console.error("Story deletion failed", error); return NextResponse.json({ error: "Unable to delete story." }, { status: 500 }); }
 }

@@ -4,6 +4,7 @@ import { AboutHero, AboutShell } from "@/components/about";
 import { getPublishedEvents } from "@/features/events/queries";
 
 export const metadata: Metadata = { title: "Events", description: "Join upcoming AAN Legacy Foundation events." };
+export const revalidate = 60;
 
 export default async function EventsPage() {
   const events = await getPublishedEvents();

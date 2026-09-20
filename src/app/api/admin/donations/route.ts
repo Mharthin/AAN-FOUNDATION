@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { requireCmsAdmin } from "@/lib/security/cms-authorization";
+import { requireCmsPermission } from "@/lib/security/cms-authorization";
 
 export async function GET(request: Request) {
   try {
-    await requireCmsAdmin();
+    await requireCmsPermission("donations");
     const url = new URL(request.url);
     const page = Math.max(1, Number(url.searchParams.get("page") || 1) || 1);
     const pageSize = Math.min(100, Math.max(1, Number(url.searchParams.get("pageSize") || 25) || 25));
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
       prisma.donation.count(),
     ]);
     return NextResponse.json({ donations, total, page, pageSize });
-  } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "Unauthorized" }, { status: 401 });
+  } catch {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 }

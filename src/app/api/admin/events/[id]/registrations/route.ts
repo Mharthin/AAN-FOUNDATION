@@ -3,7 +3,8 @@ import { prisma } from "@/lib/db/prisma";
 import { requireCmsPermission } from "@/lib/security/cms-authorization";
 
 function csvCell(value: string | number | Date | null) {
-  return `"${String(value ?? "").replaceAll('"', '""')}"`;
+  const text = String(value ?? "").replaceAll('"', '""');
+  return `"${/^[=+\-@]/.test(text) ? `'${text}` : text}"`;
 }
 
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {

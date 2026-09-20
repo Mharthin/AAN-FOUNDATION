@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { requireCmsAdmin } from "@/lib/security/cms-authorization";
+import { requireCmsPermission } from "@/lib/security/cms-authorization";
 import { z } from "zod";
 
 const storySchema = z.object({
@@ -11,13 +11,13 @@ const storySchema = z.object({
 });
 
 export async function GET() {
-  try { await requireCmsAdmin(); return NextResponse.json(await prisma.story.findMany({ orderBy: { updatedAt: "desc" }, include: { author: { select: { name: true, email: true } } } })); }
-  catch (error) { return NextResponse.json({ error: error instanceof Error ? error.message : "Unauthorized" }, { status: 401 }); }
+  try { await requireCmsPermission("stories"); return NextResponse.json(await prisma.story.findMany({ orderBy: { updatedAt: "desc" }, include: { author: { select: { name: true, email: true } } } })); }
+  catch { return NextResponse.json({ error: "Unauthorized." }, { status: 401 }); }
 }
 
 export async function POST(request: Request) {
   try {
-    await requireCmsAdmin(); const parsed = storySchema.safeParse(await request.json());
+    await requireCmsPermission("stories"); const parsed = storySchema.safeParse(await request.json());
     if (!parsed.success) return NextResponse.json({ error: "Invalid story fields." }, { status: 400 });
     const story = await prisma.story.create({ data: { ...parsed.data, featuredImage: parsed.data.featuredImage || null, seoTitle: parsed.data.seoTitle || null, seoDescription: parsed.data.seoDescription || null, publishedAt: parsed.data.status === "PUBLISHED" ? parsed.data.publishedAt || new Date() : null } });
     return NextResponse.json(story, { status: 201 });

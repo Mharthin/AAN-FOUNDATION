@@ -1,12 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "export",
   trailingSlash: true,
-  basePath: process.env.GITHUB_ACTIONS ? "/AAN-FOUNDATION" : "",
-  env: {
-    NEXT_PUBLIC_BASE_PATH: process.env.GITHUB_ACTIONS ? "/AAN-FOUNDATION" : "",
-  },
   poweredByHeader: false,
   reactStrictMode: true,
   images: {

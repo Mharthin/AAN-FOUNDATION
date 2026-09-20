@@ -1,0 +1,11 @@
+"use client";
+
+import { useState } from "react";
+
+type Donation = { id: string; amount: number; currency: string; purpose: string; donorName: string | null; donorEmail: string; reference: string; status: string; createdAt: string };
+
+export default function AdminDonationsPage() {
+  const [token, setToken] = useState(""); const [donations, setDonations] = useState<Donation[]>([]); const [message, setMessage] = useState("Enter the CMS token to load donations.");
+  async function load() { const response = await fetch("/api/admin/donations", { headers: { Authorization: `Bearer ${token}` } }); const data = await response.json(); if (!response.ok) { setMessage(data.error || "Unable to load donations."); return; } setDonations(data.donations); setMessage(`${data.total} donation record(s)`); }
+  return <main className="section-shell min-h-screen py-16"><p className="eyebrow">Admin · Finance</p><h1 className="display-text mt-4 text-5xl text-[var(--forest-950)]">Donations</h1><div className="mt-8 flex max-w-2xl gap-3"><input className="form-control" type="password" placeholder="CMS token" value={token} onChange={(event) => setToken(event.target.value)} /><button onClick={load} className="bg-[var(--forest-950)] px-5 text-sm font-bold text-white">Load</button></div><p className="mt-3 text-sm text-[var(--muted)]">{message}</p><div className="mt-8 overflow-x-auto border border-[var(--line)]"><table className="w-full min-w-[50rem] text-left text-sm"><thead className="bg-[var(--forest-100)]"><tr>{["Date", "Amount", "Purpose", "Donor", "Reference", "Status"].map((heading) => <th key={heading} className="p-4 font-bold">{heading}</th>)}</tr></thead><tbody>{donations.map((donation) => <tr key={donation.id} className="border-t border-[var(--line)]"><td className="p-4">{new Date(donation.createdAt).toLocaleDateString()}</td><td className="p-4">{donation.currency} {donation.amount}</td><td className="p-4">{donation.purpose}</td><td className="p-4">{donation.donorName || "Anonymous"}<br /><span className="text-xs text-[var(--muted)]">{donation.donorEmail}</span></td><td className="p-4 font-mono text-xs">{donation.reference}</td><td className="p-4">{donation.status}</td></tr>)}</tbody></table></div></main>;
+}

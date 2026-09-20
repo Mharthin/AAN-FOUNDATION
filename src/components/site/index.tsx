@@ -11,7 +11,8 @@ type LinkItem = { label: string; href: string };
 const navItems: LinkItem[] = [
   { label: "About", href: "/about" },
   { label: "Programs", href: "/programs" },
-  { label: "Our story", href: "/#stories" },
+  { label: "Events", href: "/events" },
+  { label: "Stories", href: "/stories" },
   { label: "Impact", href: "/#impact" },
   { label: "Get involved", href: "/#involved" },
 ];
@@ -43,7 +44,7 @@ export function Navbar() {
               {item.label}
             </Link>
           ))}
-          <Button variant="gold" size="sm" type="button">Support our work</Button>
+          <Link href="/donate"><Button variant="gold" size="sm" type="button">Support our work</Button></Link>
         </nav>
         <button
           type="button"
@@ -66,7 +67,7 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <Button variant="gold" size="md" className="mt-4 w-full">Support our work</Button>
+            <Link href="/donate"><Button variant="gold" size="md" className="mt-4 w-full">Support our work</Button></Link>
           </div>
         </nav>
       ) : null}

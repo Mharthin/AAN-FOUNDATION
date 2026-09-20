@@ -12,9 +12,9 @@ The AAN Legacy Foundation platform is a Next.js, TypeScript, and PostgreSQL appl
 
 The local site is available at http://localhost:3000.
 
-## GitHub Pages deployment
+## Production deployment
 
-Pushes to `main` build the static Next.js export and deploy it through GitHub Pages Actions. In the repository settings, set **Pages > Build and deployment > Source** to **GitHub Actions**. The published site is available at https://mharthin.github.io/AAN-FOUNDATION/.
+The donation and CMS features require a Node.js runtime and PostgreSQL; the application is no longer a static export. Deploy the application to a server-capable Next.js host (such as Vercel, Render, or a managed Node.js service), configure the environment variables below, and set the Paystack webhook URL to `/api/paystack/webhook`.
 
 ## Quality checks
 
@@ -32,3 +32,9 @@ npm run build
 - `npm run db:seed` inserts explicitly marked local placeholder content.
 
 Do not commit `.env` files or real credentials. Scholarship, volunteer, and mentor workflows require Auth.js or an equivalent session provider, private S3-compatible object storage where documents are involved, malware scanning, and a configured `APPLICATION_ENCRYPTION_KEY` before public submissions are enabled. The GitHub Pages deployment intentionally keeps application controls disabled because it cannot securely run server-side auth, uploads, or database mutations.
+
+### Donation and CMS environment
+
+- `PAYSTACK_SECRET_KEY` is server-only and is used for initialization, verification, and webhook signature checks.
+- `NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY` is reserved for client-side Paystack integrations and must never contain the secret key.
+- `CMS_ADMIN_TOKEN` is a temporary protected API credential for CMS operators until the full session provider is enabled. Send it as `Authorization: Bearer <token>` or the `cms_admin_token` cookie.

@@ -80,6 +80,20 @@ model User {
   peopleApplicationNotes PeopleApplicationNote[]
   peopleStatusChanges PeopleApplicationStatusHistory[]
   stories       Story[]
+  sessions      Session[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  userId     String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
 }
 
 model Program {

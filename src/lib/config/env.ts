@@ -13,7 +13,6 @@ const baseEnvSchema = z.object({
 const productionEnvSchema = baseEnvSchema.extend({
   APPLICATION_ENCRYPTION_KEY: z.string().regex(/^[a-f0-9]{64}$/i),
   PAYSTACK_SECRET_KEY: z.string().min(1),
-  CMS_ADMIN_TOKEN: z.string().min(32),
 });
 
 function readProcessEnv() {

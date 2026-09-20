@@ -1,11 +1,27 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { AboutShell } from "@/components/about";
 import { ApplicationPortalNotice } from "@/components/scholarships";
 import { Button } from "@/components/ui/button";
 
 export function SignInShell({ createAccount = false }: { createAccount?: boolean }) {
   const title = createAccount ? "Create your applicant account." : "Sign in to your applicant account.";
-  return <AboutShell><section className="section-shell grid min-h-[70vh] items-center gap-12 py-20 lg:grid-cols-[0.8fr_1.2fr]"><div><p className="eyebrow">Applicant portal</p><h1 className="display-text mt-5 text-5xl text-[var(--forest-950)] sm:text-6xl">{title}</h1><p className="mt-6 text-base leading-7 text-[var(--muted)]">Your application information and private documents will be protected behind your account.</p></div><div className="space-y-6 border border-[var(--line)] bg-[var(--paper)] p-6 sm:p-8"><ApplicationPortalNotice title="Secure authentication is not configured yet" /><fieldset disabled className="space-y-5 opacity-70"><label className="block text-sm font-bold text-[var(--forest-950)]">Email address<input type="email" className="form-control mt-2" /></label><label className="block text-sm font-bold text-[var(--forest-950)]">Password<input type="password" className="form-control mt-2" /></label><Button type="button">{createAccount ? "Create account" : "Sign in"}</Button></fieldset><p className="text-sm text-[var(--muted)]">{createAccount ? "Already have an account? " : "Need an account? "}<Link href={createAccount ? "/sign-in/" : "/create-account/"} className="font-bold text-[var(--forest-800)]">{createAccount ? "Sign in" : "Create one"}</Link></p></div></section></AboutShell>;
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  async function submit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault(); setError(""); setLoading(true);
+    const form = new FormData(event.currentTarget);
+    const payload = Object.fromEntries(form);
+    const response = await fetch(createAccount ? "/api/auth/register" : "/api/auth/sign-in", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+    const data = await response.json();
+    if (!response.ok) { setError(data.error || "Authentication failed."); setLoading(false); return; }
+    router.push("/applications/");
+  }
+  return <AboutShell><section className="section-shell grid min-h-[70vh] items-center gap-12 py-20 lg:grid-cols-[0.8fr_1.2fr]"><div><p className="eyebrow">Applicant portal</p><h1 className="display-text mt-5 text-5xl text-[var(--forest-950)] sm:text-6xl">{title}</h1><p className="mt-6 text-base leading-7 text-[var(--muted)]">Your application information and private documents will be protected behind your account.</p></div><form onSubmit={submit} className="space-y-5 border border-[var(--line)] bg-[var(--paper)] p-6 sm:p-8">{createAccount ? <label className="block text-sm font-bold text-[var(--forest-950)]">Full name<input name="name" required minLength={2} className="form-control mt-2" /></label> : null}<label className="block text-sm font-bold text-[var(--forest-950)]">Email address<input name="email" required type="email" className="form-control mt-2" /></label><label className="block text-sm font-bold text-[var(--forest-950)]">Password<input name="password" required minLength={12} type="password" className="form-control mt-2" /></label>{error ? <p role="alert" className="text-sm text-[var(--danger)]">{error}</p> : null}<Button type="submit" disabled={loading}>{loading ? "Please wait..." : createAccount ? "Create account" : "Sign in"}</Button><p className="text-sm text-[var(--muted)]">{createAccount ? "Already have an account? " : "Need an account? "}<Link href={createAccount ? "/sign-in/" : "/create-account/"} className="font-bold text-[var(--forest-800)]">{createAccount ? "Sign in" : "Create one"}</Link></p></form></section></AboutShell>;
 }
 
 export function ApplicationStatusShell({ reference }: { reference?: string }) {

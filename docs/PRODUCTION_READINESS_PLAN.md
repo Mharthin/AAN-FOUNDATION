@@ -11,6 +11,7 @@ The order is intentional: we will fix the things that can cause data loss, unaut
 - The latest reviewed commit is `8e589a8`.
 - The application is **not production-ready yet**.
 - The current admin token is temporary.
+- Stage 2 now includes database-backed user registration, login, password hashing, and sessions. The token remains only as a local-development fallback.
 - Applicant authentication and secure document uploads are not implemented.
 - No production database or payment credentials are configured in this development workspace.
 - A reproducible initial Prisma migration has now been generated in `prisma/migrations/`.
@@ -62,14 +63,19 @@ Exit condition:
 
 **Why second:** No public applications or real admin access should be enabled without reliable identity.
 
-I will:
+Implemented in this stage:
 
-- Replace the shared CMS token with individual admin accounts.
-- Add secure password hashing.
-- Add sessions, logout, expiry, and revocation.
+- Add secure password hashing with Node `scrypt`.
+- Add database sessions, logout, expiry, and revocation.
 - Connect applicant registration and login to real sessions.
-- Add role-based authorization tied to database users.
-- Protect admin pages and APIs consistently.
+- Add role-based authorization tied to database users for protected APIs.
+- Add rate limits to registration and sign-in.
+
+Still required before this stage is complete:
+
+- Replace the development-only CMS token fallback everywhere.
+- Add account recovery/email verification and MFA for administrators.
+- Protect applicant application APIs with the session user identity.
 - Add audit attribution to admin actions.
 
 You will manually:
@@ -78,10 +84,10 @@ You will manually:
 - Create the first production administrator through a controlled setup process.
 - Decide who should receive which administrative role.
 
-Exit condition:
+Current stage status:
 
-- An applicant can register, log in, log out, and access only their own application data.
-- An administrator can log in and access only permitted modules.
+- Applicant registration, login, logout, and session expiry are implemented.
+- Full applicant ownership enforcement and complete admin-page protection remain Stage 2 follow-up work.
 
 ## Stage 3 — Secure scholarship applications and document uploads
 

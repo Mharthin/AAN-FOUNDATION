@@ -46,6 +46,20 @@ enum PeopleApplicationStatus {
   WITHDRAWN
 }
 
+enum DonationStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
 model User {
   id            String   @id @default(cuid())
   email         String   @unique
@@ -65,6 +79,21 @@ model User {
   mentorRegistrations MentorRegistration[]
   peopleApplicationNotes PeopleApplicationNote[]
   peopleStatusChanges PeopleApplicationStatusHistory[]
+  stories       Story[]
+  sessions      Session[]
+}
+
+model Session {
+  id         String   @id @default(cuid())
+  tokenHash  String   @unique
+  userId     String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  lastUsedAt DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
 }
 
 model Program {
@@ -95,10 +124,20 @@ model Story {
   slug          String        @unique
   excerpt       String
   body          String
+  featuredImage String?
+  category      String
+  seoTitle      String?
+  seoDescription String?
+  authorId      String?
+  author        User?         @relation(fields: [authorId], references: [id], onDelete: SetNull)
   status        ContentStatus @default(DRAFT)
   publishedAt   DateTime?
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([category])
+  @@index([authorId])
 }
 
 model Event {
@@ -106,13 +145,35 @@ model Event {
   title         String
   slug          String        @unique
   summary       String
-  description   String?
+  description   String
   startsAt      DateTime
   endsAt        DateTime?
   location      String?
-  status        ContentStatus @default(DRAFT)
+  featuredImage String?
+  capacity      Int?
+  registrationDeadline DateTime?
+  status        EventStatus   @default(DRAFT)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
+  registrations EventRegistration[]
+
+  @@index([status, startsAt])
+  @@index([registrationDeadline])
+}
+
+model EventRegistration {
+  id          String   @id @default(cuid())
+  eventId     String
+  fullName    String
+  email       String
+  phone       String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, email])
+  @@index([eventId, createdAt])
+  @@index([email])
 }
 
 model AuditLog {
@@ -268,6 +329,35 @@ model MentorRegistration {
   @@index([status, createdAt])
   @@index([email])
   @@index([profession])
+}
+
+model Donation {
+  id              String         @id @default(cuid())
+  reference       String         @unique
+  amount          Int
+  currency        String         @default("GHS")
+  purpose         String
+  donorName       String?
+  donorEmail      String
+  donorPhone      String?
+  message         String?
+  status          DonationStatus @default(PENDING)
+  gatewayStatus   String?
+  gatewayResponse Json?
+  paidAt          DateTime?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([status, createdAt])
+  @@index([donorEmail])
+  @@index([purpose])
+}
+
+model PaystackWebhookEvent {
+  id          String   @id @default(cuid())
+  eventId     String   @unique
+  eventType   String
+  receivedAt  DateTime @default(now())
 }
 
 model PeopleApplicationNote {

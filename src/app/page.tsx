@@ -1,4 +1,8 @@
+import type { Metadata } from "next";
 import { CTASection, EventCard, Footer, HeroSection, ImpactCard, InvolvementCard, Navbar, ProgramCard, SectionHeader, StoryCard } from "@/components/site";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata("Building Legacies. Impacting Lives.", "AAN Legacy Foundation creates opportunities through education, scholarships, youth empowerment, humanitarian support, and community development.", "/");
 
 const programs = [
   ["01", "Education & Scholarships", "Creating pathways to learning and opportunity. Program details and eligibility will be published when confirmed."],
@@ -19,7 +23,7 @@ export default function Home() {
     <main className="min-h-screen bg-[var(--ivory)]">
       <Navbar />
       <HeroSection />
-      <section id="change" className="relative overflow-hidden bg-[var(--gold-500)] py-20 lg:py-28">
+      <section id="main-content" className="relative overflow-hidden bg-[var(--gold-500)] py-20 lg:py-28">
         <div className="absolute inset-y-0 right-0 hidden w-1/3 border-l border-[rgba(13,45,34,0.12)] lg:block" aria-hidden="true" />
         <div className="section-shell relative grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
           <SectionHeader eyebrow="The ripple of change" title="Change starts with one." />

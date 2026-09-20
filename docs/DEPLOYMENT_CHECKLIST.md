@@ -77,6 +77,7 @@ Run from a clean checkout:
 ```bash
 npm ci
 npm run db:generate
+npm run env:check
 npm run typecheck
 npm run lint
 npm run build

@@ -5,7 +5,7 @@ import { Footer, Navbar, SectionHeader } from "@/components/site";
 const assetPath = (path: string) => `${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}${path}`;
 
 export function AboutShell({ children }: { children: React.ReactNode }) {
-  return <main className="min-h-screen bg-[var(--ivory)]"><Navbar />{children}<Footer /></main>;
+  return <main id="main-content" className="min-h-screen bg-[var(--ivory)]"><Navbar />{children}<Footer /></main>;
 }
 
 export function AboutHero({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {

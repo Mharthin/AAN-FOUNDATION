@@ -6,11 +6,13 @@ const baseEnvSchema = z.object({
   APPLICATION_ENCRYPTION_KEY: z.string().regex(/^[a-f0-9]{64}$/i).optional(),
   PAYSTACK_SECRET_KEY: z.string().min(1).optional(),
   NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: z.string().min(1).optional(),
+  RATE_LIMIT_PROVIDER: z.enum(["memory", "platform"]).default("memory"),
 });
 
 const productionEnvSchema = baseEnvSchema.extend({
   APPLICATION_ENCRYPTION_KEY: z.string().regex(/^[a-f0-9]{64}$/i),
   PAYSTACK_SECRET_KEY: z.string().min(1),
+  RATE_LIMIT_PROVIDER: z.literal("platform"),
 });
 
 function readProcessEnv() {
@@ -20,6 +22,7 @@ function readProcessEnv() {
     APPLICATION_ENCRYPTION_KEY: process.env.APPLICATION_ENCRYPTION_KEY,
     PAYSTACK_SECRET_KEY: process.env.PAYSTACK_SECRET_KEY,
     NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY,
+    RATE_LIMIT_PROVIDER: process.env.RATE_LIMIT_PROVIDER,
   };
 }
 

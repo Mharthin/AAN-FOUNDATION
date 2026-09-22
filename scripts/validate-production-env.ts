@@ -1,4 +1,7 @@
+import { loadEnvConfig } from "@next/env";
 import { validateProductionEnv } from "../src/lib/config/env";
+
+loadEnvConfig(process.cwd());
 
 try {
   validateProductionEnv();

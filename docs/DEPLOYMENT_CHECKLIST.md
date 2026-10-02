@@ -16,7 +16,8 @@ This checklist separates work that can be completed in the repository from work 
 
 Configure secrets through the hosting provider, not Git:
 
-- `DATABASE_URL`
+- `DATABASE_URL` (use the Supabase transaction-pooler URL for the Vercel app)
+- `DIRECT_URL` (use Supabase's session-pooler or direct URL for Prisma migrations)
 - `NEXT_PUBLIC_APP_URL` using the HTTPS production URL
 - `APPLICATION_ENCRYPTION_KEY`
 - `PAYSTACK_SECRET_KEY`
@@ -30,6 +31,7 @@ Verify that `.env`, `.env.local`, and provider secret exports are not committed.
 
 - Provision managed PostgreSQL with encrypted connections.
 - Create a least-privilege application database user.
+- Keep runtime and migration connection URLs separate; do not use the transaction pooler for migrations.
 - Run `npm ci`.
 - Run `npm run db:generate`.
 - Review the migration SQL.

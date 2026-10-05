@@ -2,13 +2,15 @@
 
 This is the quick status page for the production-readiness work. The detailed roadmap remains in [PRODUCTION_READINESS_PLAN.md](./PRODUCTION_READINESS_PLAN.md), and deployment tasks remain in [DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md).
 
-Last checked: 2026-09-22
+Last checked: 2026-10-05
 
 ## Decision
 
-**Yes, we can proceed to Stage 2 work.**
+**Stage 2 remains in progress. Do not enable real users or proceed to Stage 3 yet.**
 
-Stage 1 database setup is complete enough to continue development. The application is not production-ready yet because production provider configuration and staging verification are still outstanding.
+Stage 1 database setup was completed for the original Supabase project. A separate staging Supabase project now exists, but no migrations have been confirmed on it. The Vercel project tracks `main` for Production and non-production branches for Preview. A fresh Preview from `staging` was blocked because the commit author lacked deployment access on the Hobby plan for this private repository.
+
+The live Vercel homepage can be viewed, but do not use its forms, authentication, donation, or application flows. Treat it as visual-only until a genuine Preview deployment is unblocked and verified.
 
 ## Stage 1 — Data protection and safe environment
 
@@ -44,12 +46,14 @@ These are deployment configuration items, not database or migration failures. Do
 ### Completed in the codebase
 
 - Applicant registration.
+- Public registrations use the `APPLICANT` role by default; the role migration must be applied before this is effective in a database.
 - Password hashing with Node `scrypt`.
 - Database-backed sessions.
 - Secure HTTP-only session cookies.
 - Session expiry and logout.
 - Sign-in and registration rate limits.
 - Session-backed role checks for protected CMS APIs.
+- General CMS authorization excludes the `REVIEWER` role; reviewer access is reserved for scholarship review.
 - Admin dashboard session integration.
 - Applicant portal session requirement.
 - Safe administrator bootstrap through environment-only seed variables.
@@ -60,20 +64,17 @@ These are deployment configuration items, not database or migration failures. Do
 - Add email verification.
 - Add MFA for administrators.
 - Connect all applicant application API routes to the authenticated user.
-- Add audit attribution consistently to administrative actions.
-- Create and verify the first administrator in the Supabase database.
+- Complete audit attribution across privileged administrative actions.
+- Review and explicitly reassign any confirmed reviewer accounts after the migration demotes existing `REVIEWER` users to `APPLICANT`.
 - Test registration, login, logout, inactive-user rejection, and role restrictions against Supabase.
+- Configure a distributed rate-limit provider and verify it across deployments.
 
 ## Manual actions currently required
 
-You do not need to create another database or rerun migrations.
-
-When ready to test authentication against Supabase:
-
-1. Set `ADMIN_NAME`, `ADMIN_EMAIL`, and `ADMIN_PASSWORD` only in the terminal environment.
-2. Run `npm run db:seed`.
-3. Open the application and test admin sign-in.
-4. Remove those temporary terminal variables after seeding.
+- Keep the Supabase staging project separate from the existing database.
+- Apply and verify migrations on staging only after the corrected code is merged.
+- Use an authorized GitHub account to merge the security changes into `staging`, so Vercel can create an unblocked Preview deployment.
+- Do not create the first production administrator until explicitly approved.
 
 Never commit `.env`, administrator passwords, database passwords, Paystack secrets, or encryption keys.
 

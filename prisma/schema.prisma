@@ -5,9 +5,11 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 enum UserRole {
+  APPLICANT
   SUPER_ADMIN
   ADMINISTRATOR
   PROGRAM_MANAGER
@@ -64,7 +66,7 @@ model User {
   id            String   @id @default(cuid())
   email         String   @unique
   name          String?
-  role          UserRole @default(REVIEWER)
+  role          UserRole @default(APPLICANT)
   isActive      Boolean  @default(true)
   passwordHash  String?
   emailVerifiedAt DateTime?

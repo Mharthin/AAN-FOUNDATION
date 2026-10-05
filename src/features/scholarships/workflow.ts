@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db/prisma";
 import { assertApplicationAccess, canReviewScholarshipApplications } from "@/lib/security/application-authorization";
 import { encryptApplicationResponses } from "@/lib/security/application-encryption";
 import { scholarshipApplicationSchema } from "@/lib/validation/scholarship-application";
+import { requireCurrentUser } from "@/lib/security/session";
 
 const transitions: Record<ScholarshipApplicationStatus, ScholarshipApplicationStatus[]> = {
   DRAFT: ["SUBMITTED", "WITHDRAWN"],
@@ -15,7 +16,9 @@ const transitions: Record<ScholarshipApplicationStatus, ScholarshipApplicationSt
   WITHDRAWN: [],
 };
 
-export async function saveScholarshipApplicationDraft({ applicationId, applicantId, input }: { applicationId?: string; applicantId: string; input: unknown }) {
+export async function saveScholarshipApplicationDraft({ applicationId, input }: { applicationId?: string; input: unknown }) {
+  const user = await requireCurrentUser();
+  const applicantId = user.id;
   const data = scholarshipApplicationSchema.partial().parse(input);
   const encryptedResponses = encryptApplicationResponses(data);
   if (!applicationId) {
@@ -30,20 +33,25 @@ export async function saveScholarshipApplicationDraft({ applicationId, applicant
   return prisma.scholarshipApplication.update({ where: { id: applicationId }, data: { encryptedResponses } });
 }
 
-export async function submitScholarshipApplication({ applicationId, applicantId }: { applicationId: string; applicantId: string }) {
+export async function submitScholarshipApplication({ applicationId }: { applicationId: string }) {
+  const user = await requireCurrentUser();
+  const applicantId = user.id;
   const application = await prisma.scholarshipApplication.findUniqueOrThrow({ where: { id: applicationId }, select: { applicantId: true, status: true } });
   assertApplicationAccess({ userId: applicantId, applicantId: application.applicantId });
   if (application.status !== "DRAFT") throw new Error("Only draft applications can be submitted.");
-  return changeScholarshipApplicationStatus({ applicationId, userId: applicantId, role: undefined, toStatus: "SUBMITTED", reason: "Applicant submitted application." });
+  return changeScholarshipApplicationStatus({ applicationId, toStatus: "SUBMITTED", reason: "Applicant submitted application." });
 }
 
-export async function changeScholarshipApplicationStatus({ applicationId, userId, role, toStatus, reason }: { applicationId: string; userId: string; role?: UserRole; toStatus: ScholarshipApplicationStatus; reason?: string }) {
+export async function changeScholarshipApplicationStatus({ applicationId, toStatus, reason }: { applicationId: string; toStatus: ScholarshipApplicationStatus; reason?: string }) {
+  const user = await requireCurrentUser();
+  const userId = user.id;
+  const role: UserRole = user.role;
   return prisma.$transaction(async (transaction) => {
     const application = await transaction.scholarshipApplication.findUniqueOrThrow({ where: { id: applicationId }, select: { applicantId: true, status: true, referenceNumber: true } });
-    const isApplicantSubmission = toStatus === "SUBMITTED" && !role;
+    const isApplicantSubmission = toStatus === "SUBMITTED" && role === "APPLICANT";
     if (isApplicantSubmission) {
       assertApplicationAccess({ userId, applicantId: application.applicantId });
-    } else if (!role || !canReviewScholarshipApplications(role)) {
+    } else if (!canReviewScholarshipApplications(role)) {
       throw new Error("Admin authorization required.");
     }
     if (!transitions[application.status].includes(toStatus)) throw new Error(`Invalid status transition from ${application.status} to ${toStatus}.`);

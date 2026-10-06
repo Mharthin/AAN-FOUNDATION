@@ -8,9 +8,10 @@ export async function POST(request: Request) {
   if (!limit.allowed) return NextResponse.json({ error: "Too many attempts. Please try again later." }, { status: 429, headers: { "Retry-After": String(limit.retryAfter) } });
   try {
     const user = await registerUser(await request.json());
+    if (!user) return NextResponse.json({ message: "If the account can be created, setup instructions will be provided." }, { status: 202 });
     return NextResponse.json({ user }, { status: 201 });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") return NextResponse.json({ error: "An account with that email already exists." }, { status: 409 });
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") return NextResponse.json({ message: "If the account can be created, setup instructions will be provided." }, { status: 202 });
     return NextResponse.json({ error: error instanceof Error ? error.message : "Unable to create account." }, { status: 400 });
   }
 }

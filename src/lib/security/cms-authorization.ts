@@ -3,12 +3,12 @@ import { getCurrentUser } from "@/lib/security/session";
 
 const adminRoles = new Set(["SUPER_ADMIN", "ADMINISTRATOR", "COMMUNICATIONS_MANAGER"]);
 const permissions = {
-  dashboard: new Set(["SUPER_ADMIN", "ADMINISTRATOR", "PROGRAM_MANAGER", "COMMUNICATIONS_MANAGER", "FINANCE_MANAGER", "REVIEWER"]),
+  dashboard: new Set(["SUPER_ADMIN", "ADMINISTRATOR", "PROGRAM_MANAGER", "COMMUNICATIONS_MANAGER", "FINANCE_MANAGER"]),
   events: new Set(["SUPER_ADMIN", "ADMINISTRATOR", "PROGRAM_MANAGER"]),
   donations: new Set(["SUPER_ADMIN", "ADMINISTRATOR", "FINANCE_MANAGER"]),
   stories: new Set(["SUPER_ADMIN", "ADMINISTRATOR", "COMMUNICATIONS_MANAGER"]),
 } as const;
-const cmsRoles = new Set(["SUPER_ADMIN", "ADMINISTRATOR", "PROGRAM_MANAGER", "COMMUNICATIONS_MANAGER", "FINANCE_MANAGER", "REVIEWER"]);
+const cmsRoles = new Set(["SUPER_ADMIN", "ADMINISTRATOR", "PROGRAM_MANAGER", "COMMUNICATIONS_MANAGER", "FINANCE_MANAGER"]);
 
 export async function requireCmsAdmin() {
   const user = await getCurrentUser();

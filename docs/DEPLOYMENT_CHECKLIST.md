@@ -55,6 +55,7 @@ Verify that `.env`, `.env.local`, and provider secret exports are not committed.
 - Do not launch applicant submissions until real authentication and sessions are enabled.
 - Create individual admin accounts with hashed passwords, secure sessions, logout, recovery, and optional MFA.
 - Assign database-backed roles per user.
+- The applicant-role migration demotes existing `REVIEWER` accounts to `APPLICANT`; explicitly reassign only confirmed reviewers through a controlled process.
 - Confirm inactive users cannot access admin APIs.
 - Create the first production administrator through a controlled bootstrap process.
 - Review administrator permissions for dashboard, events, stories, donations, applications, users, and settings.

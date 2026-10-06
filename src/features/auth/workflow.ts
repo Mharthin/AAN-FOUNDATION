@@ -7,8 +7,8 @@ export async function registerUser(input: unknown) {
   const data = signUpSchema.parse(input);
   const email = data.email.toLowerCase();
   const existing = await prisma.user.findUnique({ where: { email }, select: { id: true } });
-  if (existing) throw new Error("An account with that email already exists.");
-  const user = await prisma.user.create({ data: { name: data.name, email, passwordHash: await hashPassword(data.password), role: "REVIEWER" }, select: { id: true, name: true, email: true, role: true } });
+  if (existing) return null;
+  const user = await prisma.user.create({ data: { name: data.name, email, passwordHash: await hashPassword(data.password), role: "APPLICANT" }, select: { id: true, name: true, email: true, role: true } });
   await createSession(user.id);
   return user;
 }
